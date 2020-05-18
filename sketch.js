@@ -10,7 +10,8 @@ let tilt;
 let forward, back, left, right;
 
 function mouseClicked(){
-  console.log("mouseX: "+mouseX+" mouseY: "+mouseY);
+  //console.log("mouseX: "+mouseX+" mouseY: "+mouseY);
+  console.log("cam_dx: "+cam_dx+" cam_dy: "+cam_dy+" cam_dz: "+cam_dz);
 }
 
 
@@ -24,12 +25,13 @@ function setup() {
   cam_z = 30;
   cam_dx = 1;
   cam_dy = 0;
-  cam_dz = 0;
+  cam_dz = -0.040992448759439054;
   tilt = 0;
   theta = 0;
   mov=0;
   highest = false;
 
+  jump_toggle=false;
   forward=false;
   back=false;
   left=false;
@@ -60,13 +62,11 @@ function draw() {
   box();
 
 
-//console.log("cam_dx: "+ cam_dx+ " cam_dy: "+cam_dy);
-//  //cam_dy = (mouseX - windowWidth/2) / (windowWidth/720);
   mov += movedX/64;
   theta = mov%TWO_PI;
 
   cam_dz = -((movedY - windowHeight/2) / (windowHeight/4)) ;
-  //console.log(radians(movedX));
+
   cam_dz = -((mouseY - windowHeight/2) / (windowHeight/4)) ;
   updateCamCenter();
 
@@ -77,8 +77,10 @@ handleUserInput();
 
 function keyPressed() {
   if (key == " ") {
-    jump_toggle = true;
+    if(jump_toggle == false){
+      jump_toggle = true;
     t0 = millis();
+    }
   }
 
   if (key == 'w'){
