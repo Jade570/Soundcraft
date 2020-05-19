@@ -11,6 +11,7 @@ let cam_cx1, cam_cy1, cam_cz1;
 let cam_cx3, cam_cy3, cam_cz3;
 let cam_dx1, cam_dy1, cam_dz1;
 let cam_dx3, cam_dy3, cam_dz3;
+let magenta, indigo, yellow, violet;
 let jump_toggle, highest;;
 let pan,tilt;
 let forward, back, left, right;
@@ -23,6 +24,18 @@ class Building {
     this.w = w;
     this.d = d;
     this.h = h;
+
+    if(this.h <= GRID_SIZE*2){
+      Pd.send('melody', [74])
+    }
+    else if(this.h <= GRID_SIZE*8){
+      Pd.send('melody', [77])
+    }
+    else{
+      Pd.send('melody', [81])
+    }
+
+
   }
   render() {
     push();
@@ -90,11 +103,13 @@ class Building {
         translate(this.x-this.w/2, this.y+this.d*(0.25), i);
         box(1, this.d*0.35,this.w*0.2);
       pop();
+
     }
 
 
   }
 }
+let chordtoggle;
 
 
 function mousePressed() {
@@ -133,6 +148,18 @@ function mouseDragged(){
 
 function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL)
+
+
+  setInterval(function(){  Pd.send('d', [0]); chordtoggle = 0;}, 8000);
+  setTimeout(function(){setInterval(function(){  Pd.send('d', [1]); chordtoggle = 1;}, 8000);}, 1000);
+  setTimeout(function(){setInterval(function(){  Pd.send('d', [2]); chordtoggle = 2;}, 8000);}, 2000);
+  setTimeout(function(){setInterval(function(){  Pd.send('d', [3]); chordtoggle = 3;}, 8000);}, 3000);
+  setTimeout(function(){setInterval(function(){  Pd.send('d', [4]); chordtoggle = 0;}, 8000);}, 4000);
+  setTimeout(function(){setInterval(function(){  Pd.send('d', [5]); chordtoggle = 1;}, 8000);}, 5000);
+  setTimeout(function(){setInterval(function(){  Pd.send('d', [6]); chordtoggle = 2;}, 8000);}, 6000);
+  setTimeout(function(){setInterval(function(){  Pd.send('d', [7]); chordtoggle = 3;}, 8000);}, 7000);
+
+
 
   // init camera
   cam_x1 = 0;
@@ -173,6 +200,15 @@ function setup() {
   orthocam.setPosition(0, 0, windowHeight);
   orthocam.lookAt(0, 0, 0);
   orthocam.ortho();
+
+  violet = color(80, 18, 110 , 200); // violet
+  indigo = color(19, 0, 163, 200); // indigo
+  yellow = color(255, 208, 0, 200); // yellow
+  magenta = color(237, 0, 158, 200); //magenta
+
+
+
+
 }
 
 function draw() {
@@ -185,7 +221,7 @@ function draw() {
   directionalLight(19, 0, 163,    0, -1, -1); // indigo
   directionalLight(255, 234, 0,   1, 0, -1); // yellow
   directionalLight(255, 0, 149,   0, 1, -1); //magenta
-  directionalLight(0, 255, 251,   0,0,-1);
+
 
 
   firstcam.camera(cam_x1, cam_y1, cam_z1,cam_cx1, cam_cy1, cam_cz1,0,0,-1);
@@ -209,11 +245,27 @@ function draw() {
 
   //world plane set-up
   noStroke();
-
+    //specularMaterial(100,100,100);
   push();
-  specularMaterial(12, 0, 145);
-  specularColor(0, 255, 242);
-  fill(255, 0, 212);
+  //specularMaterial(12, 0, 145,50);
+  switch(chordtoggle){
+    case 0:
+    fill(indigo);
+
+    break;
+
+    case 1:
+    fill(violet);
+    break;
+
+    case 2:
+    fill(magenta);
+    break;
+
+    case 3:
+    fill(yellow);
+    break;
+  }
   plane(WORLD_SIZE, WORLD_SIZE);
   pop();
 
@@ -257,7 +309,6 @@ function keyPressed() {
 
 
   if (key == '1') {
-    console.log("1");
     if (firsttoggle == false) {
       firsttoggle = true;
       thirdtoggle = false;
@@ -335,7 +386,6 @@ function updateCamCenter() {
   cam_dz1 = sin(tilt);
 
   // compute scene center position
-
   cam_cx1 = cam_x1 + cam_dx1;
   cam_cy1 = cam_y1 + cam_dy1;
   cam_cz1 = cam_z1 + cam_dz1;
