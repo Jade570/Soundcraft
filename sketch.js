@@ -169,7 +169,7 @@ function setup() {
   cam_dy1 = -1;
   cam_dz1 = 0;
 
-  cam_x3 = windowWidth/2;
+  cam_x3 = windowHeight*0.75;
   cam_y3 = windowHeight/2;
   cam_z3 = windowHeight/4;
   cam_dx3 = 0;
