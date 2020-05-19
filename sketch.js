@@ -183,7 +183,7 @@ function setup() {
           Pd.send('melody', [77]);
       }
       else{
-        Pd.send('melody', [81]);
+        Pd.send('melody', [83]);
       }
     }, 4000);}, 1000);
   setTimeout(function(){setInterval(function(){
@@ -192,10 +192,10 @@ function setup() {
           Pd.send('melody', [72]);
       }
       else if(Bldgs[bldg_i-1].h <= GRID_SIZE*8){
-          Pd.send('melody', [74]);
+          Pd.send('melody', [76]);
       }
       else{
-        Pd.send('melody', [83]);
+        Pd.send('melody', [86]);
       }
     }, 4000);}, 2000);
   setTimeout(function(){setInterval(function(){
