@@ -1,7 +1,7 @@
-const WORLD_SIZE = 700;
+const WORLD_SIZE = 500;
 const GRID_SIZE = 30;
-let firstcam, thirdcam;
-let camtoggle;
+let firstcam, orthocam, thirdcam;
+let firsttoggle, thirdtoggle;
 let cam_x, cam_y, cam_z;
 let t0;
 let mov, theta;
@@ -26,20 +26,20 @@ class Building {
     strokeWeight(0.5);
     stroke(92, 6, 56);
     fill(255 - this.h, 255 - this.h, 255 - this.h);
-    //specularMaterial(79, 237, 255);
+    //specularMaterial(7, 6, 74);
     box(this.w, this.d, (this.h + GRID_SIZE*3));
     pop();
 
     for(let i = this.w*0.25; i< (this.h+GRID_SIZE*3)-this.w*0.25; i+=this.w*0.25){
       push();
         specularMaterial(255, 0, 149);
-        fill(79, 237, 255);
+        fill(7, 6, 74);
         translate(this.x+this.w*0.25, this.y+this.d/2, i);
         box(this.w*0.35, 1, this.w*0.2);
       pop();
       push();
         specularMaterial(255, 0, 149);
-        fill(79, 237, 255);
+        fill(7, 6, 74);
         translate(this.x+this.w*(-0.25), this.y+this.d/2, i);
         box(this.w*0.35, 1, this.w*0.2);
       pop();
@@ -48,13 +48,13 @@ class Building {
     for(let i = this.w*0.25; i< (this.h+GRID_SIZE*3)-this.w*0.25; i+=this.w*0.25){
       push();
         specularMaterial(255, 234, 0);
-        fill(79, 237, 255);
+        fill(7, 6, 74);
         translate(this.x+this.w/2, this.y+this.d*(-0.25), i);
         box(1, this.d*0.35,this.w*0.2);
       pop();
       push();
         specularMaterial(255, 234, 0);
-        fill(79, 237, 255);
+        fill(7, 6, 74);
         translate(this.x+this.w/2, this.y+this.d*(0.25), i);
         box(1, this.d*0.35,this.w*0.2);
       pop();
@@ -62,13 +62,13 @@ class Building {
     for(let i = this.w*0.25; i< (this.h+GRID_SIZE*3)-this.w*0.25; i+=this.w*0.25){
       push();
         specularMaterial(19, 0, 163);
-        fill(79, 237, 255);
+        fill(7, 6, 74);
         translate(this.x+this.w*0.25, this.y-this.d/2, i);
         box(this.w*0.35, 1, this.w*0.2);
       pop();
       push();
         specularMaterial(19, 0, 163);
-        fill(79, 237, 255);
+        fill(7, 6, 74);
         translate(this.x+this.w*(-0.25), this.y-this.d/2, i);
         box(this.w*0.35, 1, this.w*0.2);
       pop();
@@ -76,13 +76,13 @@ class Building {
     for(let i = this.w*0.25; i< (this.h+GRID_SIZE*3)-this.w*0.25; i+=this.w*0.25){
       push();
         specularMaterial(153, 0, 255);
-        fill(79, 237, 255);
+        fill(7, 6, 74);
         translate(this.x-this.w/2, this.y+this.d*(-0.25), i);
         box(1, this.d*0.35,this.w*0.2);
       pop();
       push();
         specularMaterial(153, 0, 255);
-        fill(79, 237, 255);
+        fill(7, 6, 74);
         translate(this.x-this.w/2, this.y+this.d*(0.25), i);
         box(1, this.d*0.35,this.w*0.2);
       pop();
@@ -98,7 +98,7 @@ function mousePressed() {
 }
 
 function mouseReleased() {
-  if (camtoggle == false) {
+  if (firsttoggle == false && thirdtoggle == false) {
     let w;
     let d;
     let h;
@@ -134,7 +134,8 @@ function setup() {
   pan = 0;
   mov = 0;
   highest = false;
-  camtoggle = false;
+  firsttoggle = false;
+  thirdtoggle = false;
 
   jump_toggle = false;
   forward = false;
@@ -144,10 +145,16 @@ function setup() {
   updateCamCenter();
 
   firstcam = createCamera();
+  firstcam.camera(cam_x, cam_y, cam_z,cam_cx, cam_cy, cam_cz,0,0,-1);
+
+
   thirdcam = createCamera();
-  thirdcam.setPosition(0, 0, windowHeight);
-  thirdcam.lookAt(0, 0, 0);
-  thirdcam.ortho();
+  thirdcam.camera(windowWidth/4, windowHeight/4, windowHeight/4, 0, -1, 0,0,0,-1);
+
+  orthocam = createCamera();
+  orthocam.setPosition(0, 0, windowHeight);
+  orthocam.lookAt(0, 0, 0);
+  orthocam.ortho();
 }
 
 function draw() {
@@ -160,24 +167,37 @@ function draw() {
   directionalLight(19, 0, 163,    0, -1, -1); // indigo
   directionalLight(255, 234, 0,   1, 0, -1); // yellow
   directionalLight(255, 0, 149,   0, 1, -1); //magenta
+  directionalLight(0, 255, 251,   0,0,-1);
 
 
   firstcam.camera(cam_x, cam_y, cam_z,cam_cx, cam_cy, cam_cz,0,0,-1);
 
 
-  if (camtoggle == true) {
+  if (firsttoggle == true) {
     setCamera(firstcam);
+
     pan += movedX/64;
     tilt -= movedY/128;
-  } else {
+    updateCamCenter();
+
+    handleUserInput();
+  }
+    else if (thirdtoggle == true) {
     setCamera(thirdcam);
+  } else {
+    setCamera(orthocam);
   }
 
 
   //world plane set-up
   noStroke();
-  fill(100, 100, 100);
+
+  push();
+  specularMaterial(12, 0, 145);
+  specularColor(0, 255, 242);
+  fill(255, 0, 212);
   plane(WORLD_SIZE, WORLD_SIZE);
+  pop();
 
   strokeWeight(0.5);
   stroke(92, 6, 56);
@@ -186,12 +206,6 @@ function draw() {
     line(-WORLD_SIZE/2,-WORLD_SIZE/2+i*GRID_SIZE, 0.1,WORLD_SIZE/2,-WORLD_SIZE/2+i*GRID_SIZE,0.1);
 
   }
-
-
-  //update camera movement
-
-  updateCamCenter();
-  handleUserInput();
 
 
   //render buildings
@@ -225,10 +239,22 @@ function keyPressed() {
 
 
   if (key == '1') {
-    if (camtoggle == false) {
-      camtoggle = true;
+    console.log("1");
+    if (firsttoggle == false) {
+      firsttoggle = true;
+      thirdtoggle = false;
     } else {
-      camtoggle = false;
+      firsttoggle = false;
+      thirdtoggle = false;
+    }
+  }
+  if (key == '3') {
+    if (thirdtoggle == false) {
+      thirdtoggle = true;
+      firsttoggle = false;
+    } else {
+      thirdtoggle = false;
+      firsttoggle = false;
     }
   }
 }
@@ -250,6 +276,7 @@ function keyReleased() {
 
 
 function handleUserInput() {
+
   let s = 1; // moving speed
   let g = -0.01; //gravity
   let v = 1; //initial speed
