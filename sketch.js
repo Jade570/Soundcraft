@@ -24,9 +24,21 @@ class Building {
     this.w = w;
     this.d = d;
     this.h = h;
-
+/*
     if(this.h <= GRID_SIZE*2){
-      Pd.send('melody', [74])
+      if(chordtoggle = 0){
+        Pd.send('melody', [74])
+      }
+      if(chordtoggle = 1){
+        Pd.send('melody', [74])
+      }
+      if(chordtoggle = 2){
+        Pd.send('melody', [74])
+      }
+      if(chordtoggle = 3){
+        Pd.send('melody', [74])
+      }
+
     }
     else if(this.h <= GRID_SIZE*8){
       Pd.send('melody', [77])
@@ -34,7 +46,7 @@ class Building {
     else{
       Pd.send('melody', [81])
     }
-
+*/
 
   }
   render() {
@@ -150,14 +162,58 @@ function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL)
 
 
-  setInterval(function(){  Pd.send('d', [0]); chordtoggle = 0;}, 8000);
-  setTimeout(function(){setInterval(function(){  Pd.send('d', [1]); chordtoggle = 1;}, 8000);}, 1000);
-  setTimeout(function(){setInterval(function(){  Pd.send('d', [2]); chordtoggle = 2;}, 8000);}, 2000);
-  setTimeout(function(){setInterval(function(){  Pd.send('d', [3]); chordtoggle = 3;}, 8000);}, 3000);
-  setTimeout(function(){setInterval(function(){  Pd.send('d', [4]); chordtoggle = 0;}, 8000);}, 4000);
+  setInterval(function(){
+      Pd.send('d', [0]); chordtoggle = 0;
+      if(Bldgs[bldg_i-1].h <= GRID_SIZE*2){
+          Pd.send('melody', [74]);
+      }
+      else if(Bldgs[bldg_i-1].h <= GRID_SIZE*8){
+          Pd.send('melody', [77]);
+      }
+      else{
+        Pd.send('melody', [81]);
+      }
+    }, 4000);
+  setTimeout(function(){setInterval(function(){
+      Pd.send('d', [1]); chordtoggle = 1;
+      if(Bldgs[bldg_i-1].h <= GRID_SIZE*2){
+          Pd.send('melody', [74]);
+      }
+      else if(Bldgs[bldg_i-1].h <= GRID_SIZE*8){
+          Pd.send('melody', [77]);
+      }
+      else{
+        Pd.send('melody', [81]);
+      }
+    }, 4000);}, 1000);
+  setTimeout(function(){setInterval(function(){
+      Pd.send('d', [2]); chordtoggle = 2;
+      if(Bldgs[bldg_i-1].h <= GRID_SIZE*2){
+          Pd.send('melody', [72]);
+      }
+      else if(Bldgs[bldg_i-1].h <= GRID_SIZE*8){
+          Pd.send('melody', [74]);
+      }
+      else{
+        Pd.send('melody', [83]);
+      }
+    }, 4000);}, 2000);
+  setTimeout(function(){setInterval(function(){
+      Pd.send('d', [3]); chordtoggle = 3;
+      if(Bldgs[bldg_i-1].h <= GRID_SIZE*2){
+          Pd.send('melody', [76]);
+      }
+      else if(Bldgs[bldg_i-1].h <= GRID_SIZE*8){
+          Pd.send('melody', [79]);
+      }
+      else{
+        Pd.send('melody', [84]);
+      }
+    }, 4000);}, 3000);
+  /*setTimeout(function(){setInterval(function(){  Pd.send('d', [4]); chordtoggle = 0;}, 8000);}, 4000);
   setTimeout(function(){setInterval(function(){  Pd.send('d', [5]); chordtoggle = 1;}, 8000);}, 5000);
   setTimeout(function(){setInterval(function(){  Pd.send('d', [6]); chordtoggle = 2;}, 8000);}, 6000);
-  setTimeout(function(){setInterval(function(){  Pd.send('d', [7]); chordtoggle = 3;}, 8000);}, 7000);
+  setTimeout(function(){setInterval(function(){  Pd.send('d', [7]); chordtoggle = 3;}, 8000);}, 7000);*/
 
 
 
