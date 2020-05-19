@@ -270,7 +270,26 @@ function draw() {
   pop();
 
   strokeWeight(0.5);
-  stroke(92, 6, 56);
+
+  switch(chordtoggle){
+    case 0:
+    stroke(255, 94, 223);
+
+    break;
+
+    case 1:
+    stroke(255, 248, 110);
+    break;
+
+    case 2:
+    stroke(69, 187, 255);
+    break;
+
+    case 3:
+    stroke(212, 0, 255);
+    break;
+  }
+
   for(i=0; i<WORLD_SIZE/GRID_SIZE; i++){
     line(-WORLD_SIZE/2+i*GRID_SIZE, -WORLD_SIZE/2,0.1,-WORLD_SIZE/2+i*GRID_SIZE, WORLD_SIZE/2,0.1);
     line(-WORLD_SIZE/2,-WORLD_SIZE/2+i*GRID_SIZE, 0.1,WORLD_SIZE/2,-WORLD_SIZE/2+i*GRID_SIZE,0.1);
@@ -278,6 +297,24 @@ function draw() {
   }
 
 
+  switch(chordtoggle){
+    case 2:
+    stroke(255, 94, 223);
+
+    break;
+
+    case 3:
+    stroke(255, 248, 110);
+    break;
+
+    case 0:
+    stroke(69, 187, 255);
+    break;
+
+    case 1:
+    stroke(212, 0, 255);
+    break;
+  }
   //render buildings
   for (let i = 0; i < bldg_i; i++) {
     Bldgs[i].render();
