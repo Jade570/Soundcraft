@@ -2,11 +2,15 @@ const WORLD_SIZE = 500;
 const GRID_SIZE = 30;
 let firstcam, orthocam, thirdcam;
 let firsttoggle, thirdtoggle;
-let cam_x, cam_y, cam_z;
+
 let t0;
 let mov, theta;
-let cam_cx, cam_cy, cam_cz;
-let cam_dx, cam_dy, cam_dz;
+let cam_x1, cam_y1, cam_z1;
+let cam_x3, cam_y3, cam_z3;
+let cam_cx1, cam_cy1, cam_cz1;
+let cam_cx3, cam_cy3, cam_cz3;
+let cam_dx1, cam_dy1, cam_dz1;
+let cam_dx3, cam_dy3, cam_dz3;
 let jump_toggle, highest;;
 let pan,tilt;
 let forward, back, left, right;
@@ -25,7 +29,7 @@ class Building {
     translate(this.x, this.y, (this.h + GRID_SIZE*3) / 2);
     strokeWeight(0.5);
     stroke(92, 6, 56);
-    fill(255 - this.h, 255 - this.h, 255 - this.h);
+    fill(255,255,255);
     //specularMaterial(7, 6, 74);
     box(this.w, this.d, (this.h + GRID_SIZE*3));
     pop();
@@ -102,8 +106,8 @@ function mouseReleased() {
     let w;
     let d;
     let h;
-    if ((millis() - t0) / 5 <= 255) {
-      h = (millis() - t0) / 5;
+    if ((millis() - t0) / 2 <= 255) {
+      h = (millis() - t0) / 2;
       w = random(GRID_SIZE * 0.8, GRID_SIZE * 2) + (millis() - t0) / 64;
       d = random(GRID_SIZE * 0.8, GRID_SIZE * 2) + (millis() - t0) / 64;
     } else {
@@ -114,8 +118,15 @@ function mouseReleased() {
     let x = mouseX - windowWidth / 2;
     let y = mouseY - windowHeight / 2;
     Bldgs[bldg_i] = new Building(x, y, w, d, h);
-    console.log(h);
+
     bldg_i++;
+  }
+}
+
+function mouseDragged(){
+  if(thirdtoggle){
+      cam_dx3 += radians(movedX);
+      cam_dz3 += radians(movedY);
   }
 }
 
@@ -124,12 +135,19 @@ function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL)
 
   // init camera
-  cam_x = 0;
-  cam_y = 100;
-  cam_z = GRID_SIZE;
-  cam_dx = 0;
-  cam_dy = -1;
-  cam_dz = 0;
+  cam_x1 = 0;
+  cam_y1 = 100;
+  cam_z1 = GRID_SIZE;
+  cam_dx1 = 0;
+  cam_dy1 = -1;
+  cam_dz1 = 0;
+
+  cam_x3 = windowWidth;
+  cam_y3 = windowHeight/2;
+  cam_z3 = windowHeight/4;
+  cam_dx3 = 0;
+  cam_dz3 = 1;
+
   tilt = 0;
   pan = 0;
   mov = 0;
@@ -145,11 +163,11 @@ function setup() {
   updateCamCenter();
 
   firstcam = createCamera();
-  firstcam.camera(cam_x, cam_y, cam_z,cam_cx, cam_cy, cam_cz,0,0,-1);
+  firstcam.camera(cam_x1, cam_y1, cam_z1,cam_cx1, cam_cy1, cam_cz1,0,0,-1);
 
 
   thirdcam = createCamera();
-  thirdcam.camera(windowWidth/4, windowHeight/4, windowHeight/4, 0, -1, 0,0,0,-1);
+  thirdcam.camera(cam_x3*cos(cam_dx3), cam_x3*sin(cam_dx3), cam_z3*(cam_dz3), 0, -1, 0,0,0,-1);
 
   orthocam = createCamera();
   orthocam.setPosition(0, 0, windowHeight);
@@ -170,8 +188,8 @@ function draw() {
   directionalLight(0, 255, 251,   0,0,-1);
 
 
-  firstcam.camera(cam_x, cam_y, cam_z,cam_cx, cam_cy, cam_cz,0,0,-1);
-
+  firstcam.camera(cam_x1, cam_y1, cam_z1,cam_cx1, cam_cy1, cam_cz1,0,0,-1);
+  thirdcam.camera(cam_x3*cos(cam_dx3), cam_x3*sin(cam_dx3), cam_z3*(cam_dz3), 0, -1, 0,0,0,-1);
 
   if (firsttoggle == true) {
     setCamera(firstcam);
@@ -283,28 +301,28 @@ function handleUserInput() {
   let t; //time passed
 
   if (forward == true) {
-      cam_x += s * (cam_dx);
-      cam_y += s * (cam_dy);
+      cam_x1 += s * (cam_dx1);
+      cam_y1 += s * (cam_dy1);
   }
   if (back == true) {
-    cam_x -= s * (cam_dx);
-    cam_y -= s * (cam_dy);
+    cam_x1 -= s * (cam_dx1);
+    cam_y1 -= s * (cam_dy1);
   }
   if (left == true) {
-    cam_x += s * (cam_dy);
-    cam_y -= s * (cam_dx);
+    cam_x1 += s * (cam_dy1);
+    cam_y1 -= s * (cam_dx1);
   }
   if (right == true) {
-    cam_x -= s * (cam_dy);
-    cam_y += s * (cam_dx);
+    cam_x1 -= s * (cam_dy1);
+    cam_y1 += s * (cam_dx1);
   }
 
   if (jump_toggle == true) {
     t = (millis() - t0) / 3;
-    cam_z = 30 + v * t + (1 / 2) * g * sq(t);
+    cam_z1 = 30 + v * t + (1 / 2) * g * sq(t);
 
-    if (cam_z <= 30) {
-      cam_z = 30;
+    if (cam_z1 <= 30) {
+      cam_z1 = 30;
       jump_toggle = false;
     }
   }
@@ -312,13 +330,13 @@ function handleUserInput() {
 }
 
 function updateCamCenter() {
-  cam_dx = cos(pan)*cos(tilt);
-  cam_dy = sin(pan)*cos(tilt);
-  cam_dz = sin(tilt);
+  cam_dx1 = cos(pan)*cos(tilt);
+  cam_dy1 = sin(pan)*cos(tilt);
+  cam_dz1 = sin(tilt);
 
   // compute scene center position
 
-  cam_cx = cam_x + cam_dx;
-  cam_cy = cam_y + cam_dy;
-  cam_cz = cam_z + cam_dz;
+  cam_cx1 = cam_x1 + cam_dx1;
+  cam_cy1 = cam_y1 + cam_dy1;
+  cam_cz1 = cam_z1 + cam_dz1;
 }
