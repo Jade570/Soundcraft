@@ -24,29 +24,7 @@ class Building {
     this.w = w;
     this.d = d;
     this.h = h;
-/*
-    if(this.h <= GRID_SIZE*2){
-      if(chordtoggle = 0){
-        Pd.send('melody', [74])
-      }
-      if(chordtoggle = 1){
-        Pd.send('melody', [74])
-      }
-      if(chordtoggle = 2){
-        Pd.send('melody', [74])
-      }
-      if(chordtoggle = 3){
-        Pd.send('melody', [74])
-      }
 
-    }
-    else if(this.h <= GRID_SIZE*8){
-      Pd.send('melody', [77])
-    }
-    else{
-      Pd.send('melody', [81])
-    }
-*/
 
   }
   render() {
@@ -162,6 +140,31 @@ function setup() {
   createCanvas(windowWidth, windowHeight, WEBGL)
 
 
+
+  setInterval(function(){Pd.send('beat', [0]);}, 4000);
+  setTimeout(function(){
+      setInterval(function(){Pd.send('beat', [1]);}, 4000);
+  },500);
+  setTimeout(function(){
+      setInterval(function(){Pd.send('beat', [2]);}, 4000);
+  },1000);
+  setTimeout(function(){
+      setInterval(function(){Pd.send('beat', [3]);}, 4000);
+  },1500);
+  setTimeout(function(){
+      setInterval(function(){Pd.send('beat', [4]);}, 4000);
+  },2000);
+  setTimeout(function(){
+      setInterval(function(){Pd.send('beat', [5]);}, 4000);
+  },2500);
+  setTimeout(function(){
+      setInterval(function(){Pd.send('beat', [6]);}, 4000);
+  },3000);
+  setTimeout(function(){
+      setInterval(function(){Pd.send('beat', [7]);}, 4000);
+  },3500);
+
+
   setInterval(function(){
       Pd.send('d', [0]); chordtoggle = 0;
       if(Bldgs[bldg_i-1].h <= GRID_SIZE*2){
@@ -210,10 +213,6 @@ function setup() {
         Pd.send('melody', [84]);
       }
     }, 4000);}, 3000);
-  /*setTimeout(function(){setInterval(function(){  Pd.send('d', [4]); chordtoggle = 0;}, 8000);}, 4000);
-  setTimeout(function(){setInterval(function(){  Pd.send('d', [5]); chordtoggle = 1;}, 8000);}, 5000);
-  setTimeout(function(){setInterval(function(){  Pd.send('d', [6]); chordtoggle = 2;}, 8000);}, 6000);
-  setTimeout(function(){setInterval(function(){  Pd.send('d', [7]); chordtoggle = 3;}, 8000);}, 7000);*/
 
 
 
