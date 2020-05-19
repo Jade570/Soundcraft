@@ -8,7 +8,7 @@ let mov, theta;
 let cam_cx, cam_cy, cam_cz;
 let cam_dx, cam_dy, cam_dz;
 let jump_toggle, highest;;
-let tilt;
+let pan,tilt;
 let forward, back, left, right;
 let Bldgs = [];
 let bldg_i = 0;
@@ -22,10 +22,73 @@ class Building {
   }
   render() {
     push();
-    translate(this.x, this.y, (this.h + GRID_SIZE) / 2);
+    translate(this.x, this.y, (this.h + GRID_SIZE*3) / 2);
+    strokeWeight(0.5);
+    stroke(92, 6, 56);
     fill(255 - this.h, 255 - this.h, 255 - this.h);
-    box(this.w, this.d, (this.h + GRID_SIZE));
+    //specularMaterial(79, 237, 255);
+    box(this.w, this.d, (this.h + GRID_SIZE*3));
     pop();
+
+    for(let i = this.w*0.25; i< (this.h+GRID_SIZE*3)-this.w*0.25; i+=this.w*0.25){
+      push();
+        specularMaterial(255, 0, 149);
+        fill(79, 237, 255);
+        translate(this.x+this.w*0.25, this.y+this.d/2, i);
+        box(this.w*0.35, 1, this.w*0.2);
+      pop();
+      push();
+        specularMaterial(255, 0, 149);
+        fill(79, 237, 255);
+        translate(this.x+this.w*(-0.25), this.y+this.d/2, i);
+        box(this.w*0.35, 1, this.w*0.2);
+      pop();
+    }
+
+    for(let i = this.w*0.25; i< (this.h+GRID_SIZE*3)-this.w*0.25; i+=this.w*0.25){
+      push();
+        specularMaterial(255, 234, 0);
+        fill(79, 237, 255);
+        translate(this.x+this.w/2, this.y+this.d*(-0.25), i);
+        box(1, this.d*0.35,this.w*0.2);
+      pop();
+      push();
+        specularMaterial(255, 234, 0);
+        fill(79, 237, 255);
+        translate(this.x+this.w/2, this.y+this.d*(0.25), i);
+        box(1, this.d*0.35,this.w*0.2);
+      pop();
+    }
+    for(let i = this.w*0.25; i< (this.h+GRID_SIZE*3)-this.w*0.25; i+=this.w*0.25){
+      push();
+        specularMaterial(19, 0, 163);
+        fill(79, 237, 255);
+        translate(this.x+this.w*0.25, this.y-this.d/2, i);
+        box(this.w*0.35, 1, this.w*0.2);
+      pop();
+      push();
+        specularMaterial(19, 0, 163);
+        fill(79, 237, 255);
+        translate(this.x+this.w*(-0.25), this.y-this.d/2, i);
+        box(this.w*0.35, 1, this.w*0.2);
+      pop();
+    }
+    for(let i = this.w*0.25; i< (this.h+GRID_SIZE*3)-this.w*0.25; i+=this.w*0.25){
+      push();
+        specularMaterial(153, 0, 255);
+        fill(79, 237, 255);
+        translate(this.x-this.w/2, this.y+this.d*(-0.25), i);
+        box(1, this.d*0.35,this.w*0.2);
+      pop();
+      push();
+        specularMaterial(153, 0, 255);
+        fill(79, 237, 255);
+        translate(this.x-this.w/2, this.y+this.d*(0.25), i);
+        box(1, this.d*0.35,this.w*0.2);
+      pop();
+    }
+
+
   }
 }
 
@@ -39,8 +102,8 @@ function mouseReleased() {
     let w;
     let d;
     let h;
-    if ((millis() - t0) / 10 <= 255) {
-      h = (millis() - t0) / 10;
+    if ((millis() - t0) / 5 <= 255) {
+      h = (millis() - t0) / 5;
       w = random(GRID_SIZE * 0.8, GRID_SIZE * 2) + (millis() - t0) / 64;
       d = random(GRID_SIZE * 0.8, GRID_SIZE * 2) + (millis() - t0) / 64;
     } else {
@@ -68,7 +131,7 @@ function setup() {
   cam_dy = -1;
   cam_dz = 0;
   tilt = 0;
-  theta = 0;
+  pan = 0;
   mov = 0;
   highest = false;
   camtoggle = false;
@@ -93,17 +156,19 @@ function draw() {
 
   // light set-up
   ambientLight(150, 150, 150);
-  directionalLight(153, 0, 255, 1, -1, 0); // side light
-  directionalLight(255, 0, 212, 0, 1, 0); // side light
-  directionalLight(19, 0, 163, 0, 0, -1); // top light
+  directionalLight(153, 0, 255,   -1, 0, -1); // violet
+  directionalLight(19, 0, 163,    0, -1, -1); // indigo
+  directionalLight(255, 234, 0,   1, 0, -1); // yellow
+  directionalLight(255, 0, 149,   0, 1, -1); //magenta
 
 
-  // camera set-up
-  firstcam.setPosition(cam_x, cam_y, cam_z);
-  firstcam.lookAt(cam_cx, cam_cy, cam_cz);
+  firstcam.camera(cam_x, cam_y, cam_z,cam_cx, cam_cy, cam_cz,0,0,-1);
+
 
   if (camtoggle == true) {
     setCamera(firstcam);
+    pan += movedX/64;
+    tilt -= movedY/128;
   } else {
     setCamera(thirdcam);
   }
@@ -114,13 +179,17 @@ function draw() {
   fill(100, 100, 100);
   plane(WORLD_SIZE, WORLD_SIZE);
 
+  strokeWeight(0.5);
+  stroke(92, 6, 56);
+  for(i=0; i<WORLD_SIZE/GRID_SIZE; i++){
+    line(-WORLD_SIZE/2+i*GRID_SIZE, -WORLD_SIZE/2,0.1,-WORLD_SIZE/2+i*GRID_SIZE, WORLD_SIZE/2,0.1);
+    line(-WORLD_SIZE/2,-WORLD_SIZE/2+i*GRID_SIZE, 0.1,WORLD_SIZE/2,-WORLD_SIZE/2+i*GRID_SIZE,0.1);
+
+  }
 
 
+  //update camera movement
 
-  //mov += movedX/64;
-  //theta = mov%TWO_PI;
-
-  //cam_dz = -((mouseY - windowHeight/2) / (windowHeight/4)) ;
   updateCamCenter();
   handleUserInput();
 
@@ -187,26 +256,20 @@ function handleUserInput() {
   let t; //time passed
 
   if (forward == true) {
-    //  cam_x += s * (cam_dx);
-    //  cam_y += s * (cam_dy);
-    cam_y -= s;
-    cam_cy -= s;
-    //cam_z += s;
+      cam_x += s * (cam_dx);
+      cam_y += s * (cam_dy);
   }
   if (back == true) {
-    cam_y += s;
-    cam_cy += s;
-    //cam_z -= s;
+    cam_x -= s * (cam_dx);
+    cam_y -= s * (cam_dy);
   }
   if (left == true) {
-    //cam_y -= s * (cam_dx);
-    cam_x -= s;
-    cam_cx -= s;
+    cam_x += s * (cam_dy);
+    cam_y -= s * (cam_dx);
   }
   if (right == true) {
-    //cam_y += s * (cam_dx);
-    cam_x += s; // * (cam_dy);
-    cam_cx += s;
+    cam_x -= s * (cam_dy);
+    cam_y += s * (cam_dx);
   }
 
   if (jump_toggle == true) {
@@ -222,18 +285,13 @@ function handleUserInput() {
 }
 
 function updateCamCenter() {
-  cam_dx = 2;
-  cam_dy = 1;
-  cam_dz = 0;
+  cam_dx = cos(pan)*cos(tilt);
+  cam_dy = sin(pan)*cos(tilt);
+  cam_dz = sin(tilt);
 
   // compute scene center position
 
-  //cam_cx = cam_x + cam_dx;
-  //cam_cy = cam_y + cam_dy;
-  //  cam_cz = cam_z + cam_dz;
-
-  cam_cx = 0;
-  cam_cy = 0;
-  cam_cz = 0;
-
+  cam_cx = cam_x + cam_dx;
+  cam_cy = cam_y + cam_dy;
+  cam_cz = cam_z + cam_dz;
 }
