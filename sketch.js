@@ -141,28 +141,28 @@ function setup() {
 
 
 
-  setInterval(function(){Pd.send('beat', [0]);}, 4000);
+  setInterval(function(){Pd.send('beat', [0]);}, 8000);
   setTimeout(function(){
-      setInterval(function(){Pd.send('beat', [1]);}, 4000);
-  },500);
-  setTimeout(function(){
-      setInterval(function(){Pd.send('beat', [2]);}, 4000);
+      setInterval(function(){Pd.send('beat', [1]);}, 8000);
   },1000);
   setTimeout(function(){
-      setInterval(function(){Pd.send('beat', [3]);}, 4000);
-  },1500);
-  setTimeout(function(){
-      setInterval(function(){Pd.send('beat', [4]);}, 4000);
+      setInterval(function(){Pd.send('beat', [2]);}, 8000);
   },2000);
   setTimeout(function(){
-      setInterval(function(){Pd.send('beat', [5]);}, 4000);
-  },2500);
-  setTimeout(function(){
-      setInterval(function(){Pd.send('beat', [6]);}, 4000);
-  },3000);
-  setTimeout(function(){
-      setInterval(function(){Pd.send('beat', [7]);}, 4000);
+      setInterval(function(){Pd.send('beat', [3]);}, 8000);
   },3500);
+  setTimeout(function(){
+      setInterval(function(){Pd.send('beat', [4]);}, 8000);
+  },4000);
+  setTimeout(function(){
+      setInterval(function(){Pd.send('beat', [5]);}, 8000);
+  },5000);
+  setTimeout(function(){
+      setInterval(function(){Pd.send('beat', [6]);}, 8000);
+  },6000);
+  setTimeout(function(){
+      setInterval(function(){Pd.send('beat', [7]);}, 8000);
+  },7000);
 
 
   setInterval(function(){
@@ -176,7 +176,7 @@ function setup() {
       else{
         Pd.send('melody', [81]);
       }
-    }, 4000);
+    }, 8000);
   setTimeout(function(){setInterval(function(){
       Pd.send('d', [1]); chordtoggle = 1;
       if(Bldgs[bldg_i-1].h <= GRID_SIZE*2){
@@ -188,7 +188,7 @@ function setup() {
       else{
         Pd.send('melody', [83]);
       }
-    }, 4000);}, 1000);
+    }, 8000);}, 2000);
   setTimeout(function(){setInterval(function(){
       Pd.send('d', [2]); chordtoggle = 2;
       if(Bldgs[bldg_i-1].h <= GRID_SIZE*2){
@@ -200,7 +200,7 @@ function setup() {
       else{
         Pd.send('melody', [86]);
       }
-    }, 4000);}, 2000);
+    }, 8000);}, 4000);
   setTimeout(function(){setInterval(function(){
       Pd.send('d', [3]); chordtoggle = 3;
       if(Bldgs[bldg_i-1].h <= GRID_SIZE*2){
@@ -212,7 +212,18 @@ function setup() {
       else{
         Pd.send('melody', [84]);
       }
-    }, 4000);}, 3000);
+    }, 8000);}, 6000);
+
+
+    setInterval(function(){
+      Pd.send('vol', [0]);
+    }, 1000);
+
+    setTimeout(function(){
+      setInterval(function(){
+        Pd.send('vol', [1]);
+      }, 1000);
+    }, 500);
 
 
 
