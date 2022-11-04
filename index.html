@@ -1,18 +1,10 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" id = "html">
   <head>
     <script src="js/jquery-3.5.1.min.js"></script>
     <script src="js/webpd-latest.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/0.10.2/p5.js"></script>
-    <script>
-        var patch1
-        $.get('patches/5559patch.pd', function(patchStr) {
-          patch1 = Pd.loadPatch(patchStr)
-          Pd.start()
-        })
 
-
-    </script>
 
 
     <link rel="stylesheet" type="text/css" href="style.css">
@@ -21,5 +13,20 @@
   </head>
   <body>
     <script src="sketch.js"></script>
+    <script>
+      let isLoaded = false;
+      const load_Pd = ()=>{
+        if (!isLoaded){
+          let patch1
+          isLoaded = true;
+        $.get('patches/5559patch.pd', function(patchStr) {
+          patch1 = Pd.loadPatch(patchStr)
+          Pd.start()
+        })
+        }
+      }
+      document.getElementById("html").addEventListener("click", load_Pd);
+      
+  </script>
   </body>
 </html>
